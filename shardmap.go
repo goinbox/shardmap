@@ -31,22 +31,22 @@ func New(shardCnt uint8) *ShardMap {
 		shardCnt = DEF_SHARD_CNT
 	}
 
-	this := &ShardMap{
+	s := &ShardMap{
 		shardCnt: shardCnt,
 		shards:   make([]*shardItem, shardCnt),
 	}
 
-	for i, _ := range this.shards {
-		this.shards[i] = &shardItem{
+	for i, _ := range s.shards {
+		s.shards[i] = &shardItem{
 			data: make(map[string]interface{}),
 		}
 	}
 
-	return this
+	return s
 }
 
-func (this *ShardMap) Get(key string) (interface{}, bool) {
-	si := this.locate(key)
+func (s *ShardMap) Get(key string) (interface{}, bool) {
+	si := s.locate(key)
 
 	si.RLock()
 	value, ok := si.data[key]
@@ -55,16 +55,16 @@ func (this *ShardMap) Get(key string) (interface{}, bool) {
 	return value, ok
 }
 
-func (this *ShardMap) Set(key string, value interface{}) {
-	si := this.locate(key)
+func (s *ShardMap) Set(key string, value interface{}) {
+	si := s.locate(key)
 
 	si.Lock()
 	si.data[key] = value
 	si.Unlock()
 }
 
-func (this *ShardMap) Del(key string) {
-	si := this.locate(key)
+func (s *ShardMap) Del(key string) {
+	si := s.locate(key)
 
 	si.Lock()
 	delete(si.data, key)
@@ -76,8 +76,8 @@ type kvItem struct {
 	value interface{}
 }
 
-func (this *ShardMap) Walk(wf func(k string, v interface{})) {
-	for _, si := range this.shards {
+func (s *ShardMap) Walk(wf func(k string, v interface{})) {
+	for _, si := range s.shards {
 		kvCh := make(chan *kvItem)
 
 		go func() {
@@ -106,10 +106,10 @@ func (this *ShardMap) Walk(wf func(k string, v interface{})) {
 	}
 }
 
-func (this *ShardMap) locate(key string) *shardItem {
-	i := bkdrHash(key) & uint32(this.shardCnt-1)
+func (s *ShardMap) locate(key string) *shardItem {
+	i := bkdrHash(key) & uint32(s.shardCnt-1)
 
-	return this.shards[i]
+	return s.shards[i]
 }
 
 func isPowOfTwo(x uint8) bool {
