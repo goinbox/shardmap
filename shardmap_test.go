@@ -20,8 +20,6 @@ func init() {
 }
 
 func TestSetGet(t *testing.T) {
-	gomisc.PrintCallerFuncNameForTest()
-
 	for i := 0; i < 10000; i++ {
 		key := getIntMd5(i)
 		shardMap.Set(key, i)
@@ -34,8 +32,6 @@ func TestSetGet(t *testing.T) {
 }
 
 func TestWalkDel(t *testing.T) {
-	gomisc.PrintCallerFuncNameForTest()
-
 	shardMap.Walk(func(k string, v interface{}) {
 		//t.Log(k, v)
 
