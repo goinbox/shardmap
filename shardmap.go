@@ -1,4 +1,4 @@
-//ref https://github.com/DeanThompson/syncmap/blob/master/syncmap.go
+// ref https://github.com/DeanThompson/syncmap/blob/master/syncmap.go
 
 package shardmap
 
@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	DEF_SHARD_CNT = 32
+	DefShardCnt = 32
 
-	BKDR_SEED = 131 // 31 131 1313 13131 131313 etc...
+	BkdrSeed = 131 // 31 131 1313 13131 131313 etc...
 )
 
 type shardItem struct {
@@ -28,7 +28,7 @@ type ShardMap struct {
  */
 func New(shardCnt uint8) *ShardMap {
 	if !isPowOfTwo(shardCnt) {
-		shardCnt = DEF_SHARD_CNT
+		shardCnt = DefShardCnt
 	}
 
 	s := &ShardMap{
@@ -43,6 +43,10 @@ func New(shardCnt uint8) *ShardMap {
 	}
 
 	return s
+}
+
+func NewDefault() *ShardMap {
+	return New(DefShardCnt)
 }
 
 func (s *ShardMap) Get(key string) (interface{}, bool) {
@@ -116,12 +120,12 @@ func isPowOfTwo(x uint8) bool {
 	return x != 0 && (x&(x-1) == 0)
 }
 
-//https://www.byvoid.com/blog/string-hash-compare/
+// https://www.byvoid.com/blog/string-hash-compare/
 func bkdrHash(str string) uint32 {
 	var h uint32
 
 	for _, c := range str {
-		h = h*BKDR_SEED + uint32(c)
+		h = h*BkdrSeed + uint32(c)
 	}
 
 	return h

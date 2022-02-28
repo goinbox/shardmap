@@ -33,7 +33,7 @@ func TestSetGet(t *testing.T) {
 
 func TestWalkDel(t *testing.T) {
 	shardMap.Walk(func(k string, v interface{}) {
-		//t.Log(k, v)
+		// t.log(k, v)
 
 		shardMap.Del(k)
 
